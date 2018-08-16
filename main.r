@@ -65,6 +65,8 @@ dset1 <- read.table(file="./data/exercise1.csv", sep=",", header=TRUE)
 InfoDataset(dset1, "./plots/exercise1.png")
 dset2 <- read.table(file="./data/exercise2.csv", sep=",", header=TRUE)
 InfoDataset(dset2, "./plots/exercise2.png")
+dset3 <- read.table(file="./data/exercise3.csv", sep=",", header=TRUE)
+InfoDataset(dset3, "./plots/exercise3.png")
 
 # Compare exercise 1 and exercise 2 with a plot facet wrap by species
 # prepare data
@@ -76,9 +78,16 @@ dmelt2 <- melt(dset2, id.vars="Prop_landscape_lost")
 dtall2 <- subset(dmelt2, (variable=="ave_prop_rem" | variable %in% species))
 colnames(dtall2) <- c("Proportion", "Species", "Value")
 
+dmelt3 <- melt(dset3, id.vars="Prop_landscape_lost")
+dtall3 <- subset(dmelt3, (variable=="ave_prop_rem" | variable %in% species))
+colnames(dtall3) <- c("Proportion", "Species", "Value")
+
 dtall1$exercise <- "1"
 dtall2$exercise <- "2"
+dtall3$exercise <- "3"
 dtall12 <- rbind(dtall1, dtall2)
+dtall23 <- rbind(dtall2, dtall3)
+
 # arrange levels
 levels(dtall12$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
 dtall12$Species <- factor(dtall12$Species, levels = c("cost_needed_for_top_fraction", "min_prop_rem", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7", "Average"))
@@ -105,8 +114,37 @@ png(file="./plots/exercise2-1.png", width=1200, height=600)
 print(pplot)
 dev.off()
 remove(pplot)
+
+# arrange levels
+levels(dtall23$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7", "Planned Urban Areas")
+dtall23$Species <- factor(dtall23$Species, levels = c("cost_needed_for_top_fraction", "min_prop_rem", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7", "Planned Urban Areas", "Average"))
+pplot <- ggplot(dtall23, aes(Proportion, Value, color=exercise)) + 
+    geom_line(size=1) + 
+    facet_wrap(~ Species, ncol = 4) +
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distributions", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_colour_manual(labels=c("Exercise 2", "Exercise 3"), values=c("#ff0000", "#048c4e")) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize+2, family=pfamily),
+        axis.title.y=element_text(size=ptextsize+2, family=pfamily),
+        axis.text=element_text(size=ptextsize-8 , family=pfamily),
+        text=element_text(size=ptextsize+2, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise3-1.png", width=1200, height=600)
+print(pplot)
+dev.off()
+remove(pplot)
 remove(dtall12)
 remove(dtall1)
 remove(dtall2)
 remove(dmelt1)
 remove(dmelt2)
+remove(dtall23)
+remove(dmelt3)
