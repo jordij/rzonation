@@ -76,6 +76,10 @@ dset5 <- read.table(file="./data/exercise5.csv", sep=",", header=TRUE)
 InfoDataset(dset5, "./plots/exercise5.png")
 dset5_nocost <- read.table(file="./data/exercise5_wo_c.csv", sep=",", header=TRUE)
 InfoDataset(dset5_nocost, "./plots/exercise5-no_cost.png")
+dset6 <- read.table(file="./data/exercise6.csv", sep=",", header=TRUE)
+InfoDataset(dset5, "./plots/exercise6.png")
+dset6_nomask <- read.table(file="./data/exercise6_wo_m.csv", sep=",", header=TRUE)
+InfoDataset(dset6_nomask, "./plots/exercise6-no_mask.png")
 
 # Comparing exercises
 dmelt1 <- melt(dset1, id.vars="Prop_landscape_lost")
@@ -98,15 +102,26 @@ dmelt5_nc <- melt(dset5_nocost, id.vars="Prop_landscape_lost")
 dtall5_nc <- subset(dmelt5_nc, (variable=="ave_prop_rem" | variable %in% species))
 colnames(dtall5_nc) <- c("Proportion", "Species", "Value")
 
+dmelt6 <- melt(dset6, id.vars="Prop_landscape_lost")
+dtall6 <- subset(dmelt6, (variable=="ave_prop_rem" | variable %in% species))
+colnames(dtall6) <- c("Proportion", "Species", "Value")
+
+dmelt6_nm <- melt(dset6_nomask, id.vars="Prop_landscape_lost")
+dtall6_nm <- subset(dmelt6_nm, (variable=="ave_prop_rem" | variable %in% species))
+colnames(dtall6_nm) <- c("Proportion", "Species", "Value")
+
 dtall1$exercise <- "1"
 dtall2$exercise <- "2"
 dtall3$exercise <- "3"
 dtall5$exercise <- "With cost"
 dtall5_nc$exercise <- "Without cost"
+dtall6$exercise <- "With mask"
+dtall6_nm$exercise <- "Without mask"
 
 dtall12 <- rbind(dtall1, dtall2)
 dtall23 <- rbind(dtall2, dtall3)
 dtall55 <- rbind(dtall5, dtall5_nc)
+dtall66 <- rbind(dtall6, dtall6_nm)
 
 # arrange levels
 levels(dtall12$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
@@ -186,6 +201,31 @@ pplot <- ggplot(dtall55, aes(Proportion, Value, color=exercise)) +
 png(file="./plots/exercise5-1.png", width=1200, height=600)
 print(pplot)
 dev.off()
+
+levels(dtall66$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
+dtall66$Species <- factor(dtall66$Species, levels = c("cost_needed_for_top_fraction", "min_prop_rem", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7", "Average"))
+pplot <- ggplot(dtall66, aes(Proportion, Value, color=exercise)) + 
+    geom_line(size=1) + 
+    facet_wrap(~ Species, ncol = 4) +
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_colour_manual(values=c("#ff0000", "#048c4e")) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize+2, family=pfamily),
+        axis.title.y=element_text(size=ptextsize+2, family=pfamily),
+        axis.text=element_text(size=ptextsize-8 , family=pfamily),
+        text=element_text(size=ptextsize+2, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise6-1.png", width=1200, height=600)
+print(pplot)
+dev.off()
 remove(pplot)
 remove(dtall12)
 remove(dtall1)
@@ -193,6 +233,9 @@ remove(dtall2)
 remove(dtall55)
 remove(dtall5_nc)
 remove(dtall5)
+remove(dtall66)
+remove(dtall6_nm)
+remove(dtall6)
 remove(dmelt1)
 remove(dmelt2)
 remove(dtall23)
@@ -204,7 +247,7 @@ pplot <- ggplot(dsetc, aes(X, Y, color=Species)) +
     geom_line(size=1) +
     ggtitle("")  +
     labs(title="", color="") +
-    scale_x_continuous(name="Proportion of neighboring cells lost", breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_x_continuous(trans = "reverse", name="Proportion of neighboring cells remaining", breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
     scale_y_continuous(name="Local value remaining", breaks=c(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2), expand=c(0, 0)) +
     scale_colour_manual(values=palette_wo_avg) +
     theme(plot.title=element_text(hjust=0.5),
