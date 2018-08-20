@@ -72,9 +72,12 @@ dset3 <- read.table(file="./data/exercise3.csv", sep=",", header=TRUE)
 InfoDataset(dset3, "./plots/exercise3.png")
 dset4 <- read.table(file="./data/exercise4.csv", sep=",", header=TRUE)
 InfoDataset(dset4, "./plots/exercise4.png")
+dset5 <- read.table(file="./data/exercise5.csv", sep=",", header=TRUE)
+InfoDataset(dset5, "./plots/exercise5.png")
+dset5_nocost <- read.table(file="./data/exercise5_wo_c.csv", sep=",", header=TRUE)
+InfoDataset(dset5_nocost, "./plots/exercise5-no_cost.png")
 
-# Compare exercise 1 and exercise 2 with a plot facet wrap by species
-# prepare data
+# Comparing exercises
 dmelt1 <- melt(dset1, id.vars="Prop_landscape_lost")
 dtall1 <- subset(dmelt1, (variable=="ave_prop_rem" | variable %in% species))
 colnames(dtall1) <- c("Proportion", "Species", "Value")
@@ -87,11 +90,23 @@ dmelt3 <- melt(dset3, id.vars="Prop_landscape_lost")
 dtall3 <- subset(dmelt3, (variable=="ave_prop_rem" | variable %in% species))
 colnames(dtall3) <- c("Proportion", "Species", "Value")
 
+dmelt5 <- melt(dset5, id.vars="Prop_landscape_lost")
+dtall5 <- subset(dmelt5, (variable=="ave_prop_rem" | variable %in% species))
+colnames(dtall5) <- c("Proportion", "Species", "Value")
+
+dmelt5_nc <- melt(dset5_nocost, id.vars="Prop_landscape_lost")
+dtall5_nc <- subset(dmelt5_nc, (variable=="ave_prop_rem" | variable %in% species))
+colnames(dtall5_nc) <- c("Proportion", "Species", "Value")
+
 dtall1$exercise <- "1"
 dtall2$exercise <- "2"
 dtall3$exercise <- "3"
+dtall5$exercise <- "With cost"
+dtall5_nc$exercise <- "Without cost"
+
 dtall12 <- rbind(dtall1, dtall2)
 dtall23 <- rbind(dtall2, dtall3)
+dtall55 <- rbind(dtall5, dtall5_nc)
 
 # arrange levels
 levels(dtall12$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
@@ -145,18 +160,47 @@ pplot <- ggplot(dtall23, aes(Proportion, Value, color=exercise)) +
 png(file="./plots/exercise3-1.png", width=1200, height=600)
 print(pplot)
 dev.off()
+
+# arrange levels
+levels(dtall55$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
+dtall55$Species <- factor(dtall55$Species, levels = c("cost_needed_for_top_fraction", "min_prop_rem", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7", "Average"))
+pplot <- ggplot(dtall55, aes(Proportion, Value, color=exercise)) + 
+    geom_line(size=1) + 
+    facet_wrap(~ Species, ncol = 4) +
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_colour_manual(values=c("#ff0000", "#048c4e")) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize+2, family=pfamily),
+        axis.title.y=element_text(size=ptextsize+2, family=pfamily),
+        axis.text=element_text(size=ptextsize-8 , family=pfamily),
+        text=element_text(size=ptextsize+2, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise5-1.png", width=1200, height=600)
+print(pplot)
+dev.off()
 remove(pplot)
 remove(dtall12)
 remove(dtall1)
 remove(dtall2)
+remove(dtall55)
+remove(dtall5_nc)
+remove(dtall5)
 remove(dmelt1)
 remove(dmelt2)
 remove(dtall23)
 remove(dmelt3)
 
-# BQP Curves Eercise 4
+# BQP Curves Exercise 4
 dsetc <- read.table(file="./data/bqp_curves_exercise4.csv", sep=",", header=TRUE)
-pplot <- ggplot(dsetc, aes(X, Y, color=Species)) +
+pplot <- ggplot(dsetc, aes(X, Y, color=Species)) + 
     geom_line(size=1) +
     ggtitle("")  +
     labs(title="", color="") +
