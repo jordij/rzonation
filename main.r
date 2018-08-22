@@ -81,6 +81,110 @@ InfoDataset(dset5, "./plots/exercise6.png")
 dset6_nomask <- read.table(file="./data/exercise6_wo_m.csv", sep=",", header=TRUE)
 InfoDataset(dset6_nomask, "./plots/exercise6-no_mask.png")
 
+species_fish = c("anc","bar","bra","car","cbe","cdo","cuc","egr","ele","ema","eso","fro","gsp","gur","hak","hap","hok","jdo","jgu","jmd","jmm","jmn","kah","kin","lea","lin","lso","mdo","nsd","pco","pil","pop","rbm","rbt","rco","rmu","sbw","scg","sch","sfl","ski","sna","spd","spe","spo","spz","ssh","ssi","sty","swa","tar","tre","war","wit","wra","ybf")
+endemic_species_fish = c("car", "cdo", "eso", "gsp", "lso", "nsd", "pco", "pop", "sfl", "spe", "spo", "spz", "ssh", "sty", "wit", "ybf")
+non_endemic_species_fish = c("anc","bar","bra","cbe","cuc","egr","ele","ema","fro","gur","hak","hap","hok","jdo","jgu","jmd","jmm","jmn","kah","kin","lea","lin","mdo","pil","rbm","rbt","rco","rmu","scg","sch","ski","sna","spd","ssi","swa","tar","tre","war","wra")
+species_fish_labels = c("Average","anc","bar","bra","car","cbe","cdo","cuc","egr","ele","ema","eso","fro","gsp","gur","hak","hap","hok","jdo","jgu","jmd","jmm","jmn","kah","kin","lea","lin","lso","mdo","nsd","pco","pil","pop","rbm","rbt","rco","rmu","sbw","scg","sch","sfl","ski","sna","spd","spe","spo","spz","ssh","ssi","sty","swa","tar","tre","war","wit","wra","ybf")
+dset7 <- read.table(file="./data/nzfish.csv", sep=",", header=TRUE)
+dmelt <- melt(dset7, id.vars="Prop_landscape_lost")
+#dtall <- subset(dmelt, (variable=="ave_prop_rem" | variable %in% species_fish))
+dtall <- subset(dmelt, (variable=="ave_prop_rem" | variable=="min_prop_rem"))
+colnames(dtall) <- c("Proportion", "Species", "Value")
+pplot <- ggplot(dtall, aes(Proportion, Value, color=Species)) + 
+    geom_line(size=1) +
+    # scale_linetype_manual(guide=FALSE, values=c("dashed", "solid", "solid", "solid", "solid", "solid", "solid", "solid"))+
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_color_manual(labels = c("Average", "Minimum"), values = c("red", "darkgreen")) +
+    #scale_colour_manual(labels=species_labels, values=palette) +
+    # scale_colour_manual(labels=species_fish_labels) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize, family=pfamily),
+        axis.title.y=element_text(size=ptextsize, family=pfamily),
+        axis.text=element_text(size=ptextsize-2 , family=pfamily),
+        text=element_text(size=ptextsize, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise7.png", width=800, height=500)
+print(pplot)
+dev.off()
+remove(pplot)
+remove(dset7)
+remove(dmelt)
+remove(dtall)
+
+dset7 <- read.table(file="./data/nzfish_no_sbw.csv", sep=",", header=TRUE)
+dmelt <- melt(dset7, id.vars="Prop_landscape_lost")
+#dtall <- subset(dmelt, (variable=="ave_prop_rem" | variable %in% species_fish))
+dtall <- subset(dmelt, (variable=="ave_prop_rem" | variable=="min_prop_rem"))
+colnames(dtall) <- c("Proportion", "Species", "Value")
+pplot <- ggplot(dtall, aes(Proportion, Value, color=Species)) + 
+    geom_line(size=1) +
+    # scale_linetype_manual(guide=FALSE, values=c("dashed", "solid", "solid", "solid", "solid", "solid", "solid", "solid"))+
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_color_manual(labels = c("Average", "Minimum"), values = c("red", "darkgreen")) +
+
+    #scale_colour_manual(labels=species_labels, values=palette) +
+    # scale_colour_manual(labels=species_fish_labels) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize, family=pfamily),
+        axis.title.y=element_text(size=ptextsize, family=pfamily),
+        axis.text=element_text(size=ptextsize-2 , family=pfamily),
+        text=element_text(size=ptextsize, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise7-no_sbw.png", width=800, height=500)
+print(pplot)
+dev.off()
+remove(pplot)
+remove(dset7)
+remove(dmelt)
+remove(dtall)
+
+dset7 <- read.table(file="./data/nzfish_no_sbw.csv", sep=",", header=TRUE)
+dmelt <- melt(dset7, id.vars="Prop_landscape_lost")
+dtall <- subset(dmelt, (variable %in% species_fish))
+colnames(dtall) <- c("Proportion", "Species", "Value")
+pplot <- ggplot(dtall, aes(Proportion, Value)) + 
+    geom_line(size=1, color="darkgreen") + 
+    facet_wrap(~ Species, ncol = 5) +
+    # scale_linetype_manual(guide=FALSE, values=c("dashed", "solid", "solid", "solid", "solid", "solid", "solid", "solid"))+
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize, family=pfamily),
+        axis.title.y=element_text(size=ptextsize, family=pfamily),
+        axis.text=element_text(size=ptextsize-2 , family=pfamily),
+        text=element_text(size=ptextsize, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/exercise7_facets.png", width=1200, height=1200)
+print(pplot)
+dev.off()
+remove(pplot)
+remove(dset7)
+remove(dmelt)
+remove(dtall)
+
 # Comparing exercises
 dmelt1 <- melt(dset1, id.vars="Prop_landscape_lost")
 dtall1 <- subset(dmelt1, (variable=="ave_prop_rem" | variable %in% species))
@@ -110,6 +214,54 @@ dmelt6_nm <- melt(dset6_nomask, id.vars="Prop_landscape_lost")
 dtall6_nm <- subset(dmelt6_nm, (variable=="ave_prop_rem" | variable %in% species))
 colnames(dtall6_nm) <- c("Proportion", "Species", "Value")
 
+dset7 <- read.table(file="./data/nzfish_no_sbw.csv", sep=",", header=TRUE)
+
+dfishbqp5 <- read.table(file="./data/nzfish_bqp_5.csv", sep=",", header=TRUE)
+dfishbqp10 <- read.table(file="./data/nzfish_bqp_10.csv", sep=",", header=TRUE)
+dfishbqp20 <- read.table(file="./data/nzfish_bqp_20.csv", sep=",", header=TRUE)
+
+dfishw2 <- read.table(file="./data/nzfish_weight2.csv", sep=",", header=TRUE)
+dfishw5 <- read.table(file="./data/nzfish_weight5.csv", sep=",", header=TRUE)
+
+dfishw2$avg_endemic <- rowMeans(dfishw2[names(dfishw2) %in% endemic_species_fish]) 
+dfishw5$avg_endemic <- rowMeans(dfishw5[names(dfishw5) %in% endemic_species_fish]) 
+dfishw2$avg_non_endemic <- rowMeans(dfishw2[names(dfishw2) %in% non_endemic_species_fish]) 
+dfishw5$avg_non_endemic <- rowMeans(dfishw5[names(dfishw5) %in% non_endemic_species_fish]) 
+
+
+dmelt_fishw2 <- melt(dfishw2, id.vars="Prop_landscape_lost")
+dtall_fishw2_end <- subset(dmelt_fishw2, (variable=="avg_endemic"))
+dtall_fishw2_non_end <- subset(dmelt_fishw2, (variable=="avg_non_endemic"))
+colnames(dtall_fishw2_end) <- c("Proportion", "Species", "Value")
+colnames(dtall_fishw2_non_end) <- c("Proportion", "Species", "Value")
+
+dmelt_fishw5 <- melt(dfishw5, id.vars="Prop_landscape_lost")
+dtall_fishw5_end <- subset(dmelt_fishw5, (variable=="avg_endemic"))
+dtall_fishw5_non_end <- subset(dmelt_fishw5, (variable=="avg_non_endemic"))
+colnames(dtall_fishw5_end) <- c("Proportion", "Species", "Value")
+colnames(dtall_fishw5_non_end) <- c("Proportion", "Species", "Value")
+
+dmelt_fishbqp5 <- melt(dfishbqp5, id.vars="Prop_landscape_lost")
+dtall1_fishbqp5 <- subset(dmelt_fishbqp5, (variable=="ave_prop_rem"))
+colnames(dtall1_fishbqp5) <- c("Proportion", "Species", "Value")
+
+dmelt_fishbqp10 <- melt(dfishbqp10, id.vars="Prop_landscape_lost")
+dtall1_fishbqp10 <- subset(dmelt_fishbqp10, (variable=="ave_prop_rem"))
+colnames(dtall1_fishbqp10) <- c("Proportion", "Species", "Value")
+
+dmelt_fishbqp20 <- melt(dfishbqp20, id.vars="Prop_landscape_lost")
+dtall1_fishbqp20 <- subset(dmelt_fishbqp20, (variable=="ave_prop_rem"))
+colnames(dtall1_fishbqp20) <- c("Proportion", "Species", "Value")
+
+dtall1_fishbqp5$exercise <- "BQP 5"
+dtall1_fishbqp10$exercise <- "BQP 10"
+dtall1_fishbqp20$exercise <- "BQP 20"
+
+dtall_fishw2_end$weight <- "Endemic weight 2"
+dtall_fishw2_non_end$weight <- "Non-endemic weight 2"
+dtall_fishw5_end$weight <- "Endemic weight 5"
+dtall_fishw5_non_end$weight <- "Non-endemic weight 5"
+
 dtall1$exercise <- "1"
 dtall2$exercise <- "2"
 dtall3$exercise <- "3"
@@ -122,6 +274,55 @@ dtall12 <- rbind(dtall1, dtall2)
 dtall23 <- rbind(dtall2, dtall3)
 dtall55 <- rbind(dtall5, dtall5_nc)
 dtall66 <- rbind(dtall6, dtall6_nm)
+dtallbqp <- rbind(dtall1_fishbqp5, dtall1_fishbqp10, dtall1_fishbqp20)
+dtallweighted <- rbind(dtall_fishw2_end, dtall_fishw2_non_end,dtall_fishw5_end,dtall_fishw5_non_end)
+
+pplot <- ggplot(dtallweighted, aes(Proportion, Value, color=weight)) + 
+    geom_line(size=1) + 
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_colour_manual(values=c("red", "darkgreen", "blue", "green")) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize+2, family=pfamily),
+        axis.title.y=element_text(size=ptextsize+2, family=pfamily),
+        axis.text=element_text(size=ptextsize-8 , family=pfamily),
+        text=element_text(size=ptextsize+2, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/nzfish_endemic.png", width=900, height=600)
+print(pplot)
+dev.off()
+remove(pplot)
+
+pplot <- ggplot(dtallbqp, aes(Proportion, Value, color=exercise)) + 
+    geom_line(size=1) + 
+    ggtitle("")  +
+    labs(title="", x="Lost landscape", y="Remaining distribution", color="") +
+    scale_x_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_y_continuous(breaks=c(0, 0.25, 0.5, 0.75, 1), expand=c(0, 0)) +
+    scale_colour_manual(values=c("red", "darkgreen", "blue")) +
+    theme(plot.title=element_text(hjust=0.5),
+        axis.title.x=element_text(size=ptextsize+2, family=pfamily),
+        axis.title.y=element_text(size=ptextsize+2, family=pfamily),
+        axis.text=element_text(size=ptextsize-8 , family=pfamily),
+        text=element_text(size=ptextsize+2, family=pfamily),
+        legend.spacing=unit(0, "cm"),
+        rect=element_blank()) +
+    theme(axis.line.x=element_line(color="grey", size=0.5),
+        axis.line.y=element_line(color="grey", size=0.5)) +
+    theme(panel.grid=element_blank(), panel.border=element_blank())
+
+png(file="./plots/nzfish_bqp.png", width=1200, height=600)
+print(pplot)
+dev.off()
+remove(pplot)
+
 
 # arrange levels
 levels(dtall12$Species) <- c("cost_needed_for_top_fraction", "min_prop_rem", "Average", "W_prop_rem", "ext.1", "ext.2", "Species 1", "Species 2", "Species 3", "Species 4", "Species 5", "Species 6", "Species 7")
